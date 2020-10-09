@@ -59,7 +59,7 @@ while(T < 1000000)
         currentA = currentA + 1;
         numPacketsASent = numPacketsASent + 1;
         backoffA = -1;
-        %CW = 4;
+        CW = 4;
         
     %Check if C total transmission is before A starts transmission
     elseif((framesC(currentC) + difs + backoffC + frameSize + sifs + ack) < (framesA(currentA) + difs + backoffA))
@@ -68,7 +68,7 @@ while(T < 1000000)
         currentC = currentC + 1;
         numPacketsCSent = numPacketsCSent + 1;
         backoffC = -1;
-        %CW = 4;
+        CW = 4;
         
     else % If A and C collide
         % Frame A is ready first
