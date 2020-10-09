@@ -1,6 +1,6 @@
 %Global counter T = 0;
 T = 0;
-lambda = 200;
+lambda = 2000;
 currentA = 1;
 currentC = 1;
 total = 0;
@@ -13,11 +13,12 @@ ack = 2;
 CW = 4;
 numPacketsASent = 0;
 numPacketsCSent = 0;
+numCollisions = 0;
 
 %Create Poisson distributions for A and C
 %Put those into arrays
-uniformFramesA = unifrnd(0,1,1,10*lambda);
-uniformFramesC = unifrnd(0,1,1,10*lambda);
+uniformFramesA = unifrnd(0,1,1,11*lambda);
+uniformFramesC = unifrnd(0,1,1,11*lambda);
 logMatrixA = log(1 - uniformFramesA);
 logMatrixC = log(1 - uniformFramesC);
 expFramesA = (-1/lambda)*logMatrixA;
@@ -62,6 +63,7 @@ while(T < 1000000)  %check this number
         currentA = currentA + 1;
         numPacketsASent = numPacketsASent + 1;
         backoffA = -1;
+        CW = 4;
     
     elseif((framesC(currentC) + backoffC) < (framesA(currentA) + backoffA))
                 %add all needed slots up, advance T to that time
@@ -75,6 +77,7 @@ while(T < 1000000)  %check this number
         currentC = currentC + 1;
         numPacketsCSent = numPacketsCSent + 1;
         backoffC = -1;
+        CW = 4;
             
     else % if A and C are equal
         timePassed = difs + backoffA + frameSize + sifs + ack;
@@ -84,6 +87,7 @@ while(T < 1000000)  %check this number
            CW = CW*2;
         end
         T = timePassed + framesA(currentA);
+        numCollisions = numCollisions + 1;
     end
         
 end
