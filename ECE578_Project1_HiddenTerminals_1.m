@@ -1,6 +1,6 @@
 %Global counter T = 0;
 T = 0;
-lambda = 2000;
+lambda = 200;
 currentA = 1;
 currentC = 1;
 total = 0;
@@ -17,8 +17,8 @@ collisions = 0;
 
 %Create Poisson distributions for A and C
 %Put those into arrays
-uniformFramesA = unifrnd(0,1,1,10*lambda);
-uniformFramesC = unifrnd(0,1,1,10*lambda);
+uniformFramesA = unifrnd(0,1,1,11*lambda);
+uniformFramesC = unifrnd(0,1,1,11*lambda);
 logMatrixA = log(1 - uniformFramesA);
 logMatrixC = log(1 - uniformFramesC);
 expFramesA = (-1/lambda)*logMatrixA;
@@ -52,22 +52,24 @@ while(T < 1000000)
         backoffC = floor(rand * CW);
     end
     
-    %Check if A total transmission is before C frame is ready
+    %Check if A total transmission is before C starts transmission
     if((framesA(currentA) + difs + backoffA + frameSize + sifs + ack) < (framesC(currentC) + difs + backoffC))
         timePassed = difs + backoffA + frameSize + sifs + ack;
         T = timePassed + framesA(currentA);
         currentA = currentA + 1;
         numPacketsASent = numPacketsASent + 1;
         backoffA = -1;
-    
-    %Check if C total transmission is before A frame is ready
+        %CW = 4;
+        
+    %Check if C total transmission is before A starts transmission
     elseif((framesC(currentC) + difs + backoffC + frameSize + sifs + ack) < (framesA(currentA) + difs + backoffA))
         timePassed = difs + backoffC + frameSize + sifs + ack;
     	T = timePassed + framesC(currentC);
         currentC = currentC + 1;
         numPacketsCSent = numPacketsCSent + 1;
         backoffC = -1;
-            
+        %CW = 4;
+        
     else % If A and C collide
         % Frame A is ready first
         if ((framesA(currentA) + backoffA) < (framesC(currentC) + backoffC))
